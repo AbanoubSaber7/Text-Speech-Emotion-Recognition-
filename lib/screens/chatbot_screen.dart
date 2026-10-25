@@ -33,7 +33,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   final ScrollController _scrollController = ScrollController();
   late GeminiService _geminiService;
   final List<_ChatMessage> _messages = [];
-  
+
   bool _isLoading = false;
   bool _hasApiKey = false;
   String? _apiKeyError;
@@ -60,37 +60,43 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     String greeting;
     switch (widget.emotion.toLowerCase()) {
       case 'happy':
-        greeting = "Hi ${widget.userName}! I'm so happy to hear that you are feeling happy today! 😊 What's making you smile? I'm here to chat about it!";
+        greeting =
+            "Hi ${widget.userName}! I'm so happy to hear that you are feeling happy today! 😊 What's making you smile? I'm here to chat about it!";
         break;
       case 'sad':
-        greeting = "Hello ${widget.userName}. I see you are feeling a bit down or sad. 💙 Remember, it's completely okay to feel this way. I'm here to listen. Would you like to talk about what's on your mind?";
+        greeting =
+            "Hello ${widget.userName}. I see you are feeling a bit down or sad. 💙 Remember, it's completely okay to feel this way. I'm here to listen. Would you like to talk about what's on your mind?";
         break;
       case 'angry':
-        greeting = "Hi ${widget.userName}. I detect some anger or frustration. 😠 Take a deep breath. I'm here to help you vent and process what happened. Tell me, what's causing this?";
+        greeting =
+            "Hi ${widget.userName}. I detect some anger or frustration. 😠 Take a deep breath. I'm here to help you vent and process what happened. Tell me, what's causing this?";
         break;
       case 'surprise':
-        greeting = "Hey ${widget.userName}! Sounds like you had a surprise! 😲 Was it a good one? Tell me all about it, I'd love to hear!";
+        greeting =
+            "Hey ${widget.userName}! Sounds like you had a surprise! 😲 Was it a good one? Tell me all about it, I'd love to hear!";
         break;
       case 'fear':
-        greeting = "Hello ${widget.userName}. I feel you might be anxious or fearful right now. 😟 You are safe here. Let's take it slow. What is causing you worry?";
+        greeting =
+            "Hello ${widget.userName}. I feel you might be anxious or fearful right now. 😟 You are safe here. Let's take it slow. What is causing you worry?";
         break;
       case 'disgust':
-        greeting = "Hi ${widget.userName}. Feeling disgusted or uncomfortable? 🤢 That's a strong emotion. Want to share what's bothering you?";
+        greeting =
+            "Hi ${widget.userName}. Feeling disgusted or uncomfortable? 🤢 That's a strong emotion. Want to share what's bothering you?";
         break;
       case 'contempt':
-        greeting = "Hello ${widget.userName}. Feeling a bit of contempt or resentment? Let's chat and unpack these feelings together. I'm here for you.";
+        greeting =
+            "Hello ${widget.userName}. Feeling a bit of contempt or resentment? Let's chat and unpack these feelings together. I'm here for you.";
         break;
       case 'neutral':
       default:
-        greeting = "Hello ${widget.userName}. Feeling neutral today? That's a peaceful state of mind. 🌸 How has your day been so far? Anything you'd like to share?";
+        greeting =
+            "Hello ${widget.userName}. Feeling neutral today? That's a peaceful state of mind. 🌸 How has your day been so far? Anything you'd like to share?";
         break;
     }
-    
-    _messages.add(_ChatMessage(
-      text: greeting,
-      isUser: false,
-      timestamp: DateTime.now(),
-    ));
+
+    _messages.add(
+      _ChatMessage(text: greeting, isUser: false, timestamp: DateTime.now()),
+    );
   }
 
   Future<void> _checkApiKey() async {
@@ -146,11 +152,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
     _messageController.clear();
     setState(() {
-      _messages.add(_ChatMessage(
-        text: text,
-        isUser: true,
-        timestamp: DateTime.now(),
-      ));
+      _messages.add(
+        _ChatMessage(text: text, isUser: true, timestamp: DateTime.now()),
+      );
       _isLoading = true;
       _apiKeyError = null;
     });
@@ -159,11 +163,13 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     try {
       final aiResponse = await _geminiService.sendMessage(text);
       setState(() {
-        _messages.add(_ChatMessage(
-          text: aiResponse,
-          isUser: false,
-          timestamp: DateTime.now(),
-        ));
+        _messages.add(
+          _ChatMessage(
+            text: aiResponse,
+            isUser: false,
+            timestamp: DateTime.now(),
+          ),
+        );
         _isLoading = false;
       });
       _scrollToBottom();
@@ -193,81 +199,103 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
   void _showApiKeyDialog() {
     final TextEditingController keyController = TextEditingController();
+    var obscureKey = true;
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        scrollable: true,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Gemini API Key'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'الشات بوت محتاج Gemini API Key مجاني من Google.\n'
-              '1) اضغط Get Free Key\n'
-              '2) انسخ المفتاح\n'
-              '3) الصقه هنا واضغط Save\n\n'
-              'المفتاح يُحفظ في التخزين الآمن على جهازك. لكن لأن التطبيق يتصل '
-              'مباشرةً بـ Gemini، يمكن استخراج المفتاح من نسخة التطبيق؛ لا تستخدم '
-              'مفتاحًا حساسًا أو إنتاجيًا. للاستخدام الإنتاجي، مرّر الطلبات عبر خادم آمن.',
-              style: TextStyle(fontSize: 13, color: Colors.black87, height: 1.4),
-            ),
-            const SizedBox(height: 12),
-            TextButton.icon(
-              onPressed: _openApiKeyPage,
-              icon: const Icon(Icons.open_in_new, size: 18),
-              label: const Text('Get Free Key'),
-              style: TextButton.styleFrom(
-                foregroundColor: _getThemeColor(widget.emotion),
-                padding: EdgeInsets.zero,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          scrollable: true,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text('Gemini API Key'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'الشات بوت محتاج Gemini API Key مجاني من Google.\n'
+                '1) اضغط Get Free Key\n'
+                '2) انسخ المفتاح\n'
+                '3) الصقه هنا واضغط Save\n\n'
+                'المفتاح يُحفظ في التخزين الآمن على جهازك. لكن لأن التطبيق يتصل '
+                'مباشرةً بـ Gemini، يمكن استخراج المفتاح من نسخة التطبيق؛ لا تستخدم '
+                'مفتاحًا حساسًا أو إنتاجيًا. للاستخدام الإنتاجي، مرّر الطلبات عبر خادم آمن.',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.black87,
+                  height: 1.4,
+                ),
               ),
+              const SizedBox(height: 12),
+              TextButton.icon(
+                onPressed: _openApiKeyPage,
+                icon: const Icon(Icons.open_in_new, size: 18),
+                label: const Text('Get Free Key'),
+                style: TextButton.styleFrom(
+                  foregroundColor: _getThemeColor(widget.emotion),
+                  padding: EdgeInsets.zero,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: keyController,
+                obscureText: obscureKey,
+                decoration: InputDecoration(
+                  hintText: 'AIzaSy...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  suffixIcon: IconButton(
+                    tooltip: obscureKey ? 'Show key' : 'Hide key',
+                    icon: Icon(
+                      obscureKey ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setDialogState(() => obscureKey = !obscureKey);
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
             ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: keyController,
-              obscureText: true,
-              decoration: InputDecoration(
-                hintText: 'AIzaSy...',
-                border: OutlineInputBorder(
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _getThemeColor(widget.emotion),
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
+              onPressed: () async {
+                final key = keyController.text.trim();
+                if (key.isNotEmpty) {
+                  await GeminiService.saveApiKey(key);
+                  await _checkApiKey();
+                  if (mounted) Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Gemini API Key saved successfully!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
+              },
+              child: const Text(
+                'Save Key',
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _getThemeColor(widget.emotion),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            onPressed: () async {
-              final key = keyController.text.trim();
-              if (key.isNotEmpty) {
-                await GeminiService.saveApiKey(key);
-                await _checkApiKey();
-                if (mounted) Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Gemini API Key saved successfully!'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              }
-            },
-            child:
-                const Text('Save Key', style: TextStyle(color: Colors.white)),
-          ),
-        ],
       ),
     );
   }
@@ -283,14 +311,15 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
           children: [
             const Text(
               'YouMatter AI Companion',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.white,
+              ),
             ),
             Text(
               'Tailored to your ${widget.emotion} mood',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.white70,
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.white70),
             ),
           ],
         ),
@@ -314,10 +343,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              themeColor.withOpacity(0.05),
-              Colors.white,
-            ],
+            colors: [themeColor.withOpacity(0.05), Colors.white],
           ),
         ),
         child: SafeArea(
@@ -327,24 +353,40 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                 Container(
                   color: Colors.amber.shade100,
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
                   child: Row(
                     children: [
-                      const Icon(Icons.warning_amber_rounded, color: Colors.orange),
+                      const Icon(
+                        Icons.warning_amber_rounded,
+                        color: Colors.orange,
+                      ),
                       const SizedBox(width: 8),
                       const Expanded(
                         child: Text(
                           'Gemini API Key is not set. Tap key icon above to set.',
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black87),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
                         ),
                       ),
                       TextButton(
                         onPressed: _showApiKeyDialog,
                         style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
-                        child: const Text('SETUP', style: TextStyle(fontWeight: FontWeight.bold)),
+                        child: const Text(
+                          'SETUP',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),
@@ -362,11 +404,17 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
               ),
               if (_isLoading)
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 16.0,
+                  ),
                   child: Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(20),
@@ -406,13 +454,16 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   }
 
   Widget _buildChatBubble(_ChatMessage message, Color themeColor) {
-    final align = message.isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start;
+    final align = message.isUser
+        ? CrossAxisAlignment.end
+        : CrossAxisAlignment.start;
     final bubbleColor = message.isUser ? themeColor : Colors.grey.shade100;
-    final isDarkThemeColor = ThemeData.estimateBrightnessForColor(themeColor) == Brightness.dark;
+    final isDarkThemeColor =
+        ThemeData.estimateBrightnessForColor(themeColor) == Brightness.dark;
     final textColor = message.isUser
         ? (isDarkThemeColor ? Colors.white : Colors.black87)
         : Colors.black87;
-    
+
     final radius = message.isUser
         ? const BorderRadius.only(
             topLeft: Radius.circular(20),
@@ -449,11 +500,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
             ),
             child: Text(
               message.text,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 15,
-                height: 1.4,
-              ),
+              style: TextStyle(color: textColor, fontSize: 15, height: 1.4),
             ),
           ),
           const SizedBox(height: 2),
@@ -500,7 +547,10 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                 decoration: const InputDecoration(
                   hintText: 'Type a message...',
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
                 ),
               ),
             ),

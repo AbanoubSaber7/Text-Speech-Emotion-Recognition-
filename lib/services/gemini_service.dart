@@ -14,12 +14,10 @@ class GeminiService {
   /// Fallback hardcoded key (leave empty in git; set locally if you want).
   static const String defaultApiKey = '';
 
-  /// Current Gemini models (tried in order if one is unavailable).
+  /// Stable text-generation models (tried in order if one is unavailable).
   static const List<String> _modelCandidates = [
+    'gemini-3.5-flash-lite',
     'gemini-2.5-flash',
-    'gemini-2.5-flash-lite',
-    'gemini-2.0-flash',
-    'gemini-1.5-flash',
   ];
 
   static Future<String?> getApiKey() async {
