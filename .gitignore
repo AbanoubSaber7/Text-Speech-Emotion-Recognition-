@@ -33,6 +33,12 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Python environments and generated files
+**/.venv/
+**/venv/
+**/__pycache__/
+.pytest_cache/
+
 # Symbolication related
 app.*.symbols
 

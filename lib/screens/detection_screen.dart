@@ -15,6 +15,7 @@ import 'package:mood_app/screens/recommendations_screen.dart';
 import 'package:mood_app/screens/live_detection_screen.dart';
 import 'package:mood_app/screens/voice_detection_screen.dart';
 import 'package:mood_app/screens/mood_history_screen.dart';
+import 'package:mood_app/screens/text_analysis_screen.dart';
 import 'package:mood_app/services/emotion_tflite_helper.dart';
 import 'package:mood_app/services/mood_alert_notification_service.dart';
 
@@ -32,6 +33,7 @@ class _DetectionScreenState extends State<DetectionScreen> {
   double? predictedConfidencePercent;
   String? manualSelectedEmotion;
   bool isLoading = false;
+  bool _isTextAnalysisSelected = false;
 
   final ImagePicker _picker = ImagePicker();
   Interpreter? _interpreter;
@@ -375,6 +377,21 @@ class _DetectionScreenState extends State<DetectionScreen> {
     );
   }
 
+  void _openTextAnalysis() {
+    setState(() => _isTextAnalysisSelected = true);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const TextAnalysisScreen()),
+    ).then((_) {
+      if (mounted) setState(() => _isTextAnalysisSelected = false);
+    });
+  }
+
+  void _selectPhotoAnalysis() {
+    setState(() => _isTextAnalysisSelected = false);
+    _showPickerOptions();
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentEmotion = predictedEmotion ?? manualSelectedEmotion;
@@ -484,6 +501,35 @@ class _DetectionScreenState extends State<DetectionScreen> {
                     'How are you feeling?',
                     style: TextStyle(fontSize: 16, color: Colors.white70),
                   ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 12),
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _buildAnalysisModeOption(
+                            label: 'Photo',
+                            isSelected: !_isTextAnalysisSelected,
+                            onTap: _selectPhotoAnalysis,
+                          ),
+                        ),
+                        Expanded(
+                          child: _buildAnalysisModeOption(
+                            label: 'Text Analysis',
+                            isSelected: _isTextAnalysisSelected,
+                            onTap: _openTextAnalysis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   if (kIsWeb)
                     Padding(
                       padding: const EdgeInsets.only(top: 12),
@@ -513,6 +559,54 @@ class _DetectionScreenState extends State<DetectionScreen> {
                   if (predictedEmotion != null) _buildResultCard(themeColor),
                   const SizedBox(height: 40),
                 ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnalysisModeOption({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: label,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            constraints: const BoxConstraints(minHeight: 44),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: isSelected ? Colors.white : Colors.transparent,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.12),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: isSelected ? const Color(0xFFC05A4E) : Colors.white,
+                fontSize: 14,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                letterSpacing: 0.2,
               ),
             ),
           ),
