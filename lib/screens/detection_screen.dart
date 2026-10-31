@@ -381,7 +381,9 @@ class _DetectionScreenState extends State<DetectionScreen> {
     setState(() => _isTextAnalysisSelected = true);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const TextAnalysisScreen()),
+      MaterialPageRoute(
+        builder: (_) => TextAnalysisScreen(userName: widget.userName),
+      ),
     ).then((_) {
       if (mounted) setState(() => _isTextAnalysisSelected = false);
     });

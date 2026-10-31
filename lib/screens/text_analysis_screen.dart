@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mood_app/screens/recommendations_screen.dart';
 import 'package:mood_app/services/text_analysis_service.dart';
 
 class TextAnalysisScreen extends StatefulWidget {
-  const TextAnalysisScreen({super.key});
+  final String userName;
+
+  const TextAnalysisScreen({super.key, required this.userName});
 
   @override
   State<TextAnalysisScreen> createState() => _TextAnalysisScreenState();
@@ -51,6 +54,31 @@ class _TextAnalysisScreenState extends State<TextAnalysisScreen> {
     } finally {
       if (mounted) setState(() => _isAnalyzing = false);
     }
+  }
+
+  void _openRecommendations(TextAnalysisResult result) {
+    final emotion = switch (result.emotion.toLowerCase()) {
+      'joy' => 'Happy',
+      'sadness' => 'Sad',
+      'anger' => 'Angry',
+      'fear' => 'Fear',
+      'disgust' => 'Disgust',
+      'surprise' => 'Surprise',
+      'neutral' => 'Neutral',
+      _ => result.emotion,
+    };
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => RecommendationsScreen(
+          userName: widget.userName,
+          emotion: emotion,
+          confidencePercent: result.confidence,
+          source: 'text',
+        ),
+      ),
+    );
   }
 
   @override
@@ -441,6 +469,25 @@ class _TextAnalysisScreenState extends State<TextAnalysisScreen> {
           ),
           const SizedBox(height: 16),
           for (final emotion in sortedEmotions) _buildEmotionBar(emotion),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 52,
+            child: FilledButton.icon(
+              onPressed: () => _openRecommendations(result),
+              icon: const Icon(Icons.lightbulb_outline_rounded),
+              label: const Text(
+                'View recommendations',
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+              style: FilledButton.styleFrom(
+                backgroundColor: _accentColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
