@@ -16,15 +16,16 @@ tool.
 
 | Software / Requirement | Version or Details | Download |
 |---|---|---|
-| Flutter SDK | A Flutter release that includes Dart SDK `3.9.2` or newer | [Install Flutter](https://docs.flutter.dev/get-started/install) |
+| Flutter SDK | Flutter 3.47 or newer; Flutter 3.50 was used to verify this project | [Install Flutter](https://docs.flutter.dev/get-started/install) |
 | Dart SDK | `^3.9.2`; included with Flutter | Included with Flutter |
 | Android Studio | A recent version, including Android SDK and Android Platform Tools | [Download Android Studio](https://developer.android.com/studio) |
-| Java Development Kit | JDK 17 recommended; Android Studio's bundled JBR can be used | Included with Android Studio |
+| Java Development Kit | JDK 17 or newer; Android Studio's bundled JBR can be used | Included with Android Studio |
 | Git | Any recent version, if cloning the repository | [Download Git](https://git-scm.com/downloads) |
 | Android device or emulator | USB debugging enabled on a physical device, or a configured Android emulator | Android Studio Device Manager |
 
-The Android project uses Gradle 8.12 and Android Gradle Plugin 8.9.1. Android
-Studio should be configured to use JDK 17 for Gradle.
+The Android project uses Gradle 9.7.1 and Android Gradle Plugin 9.1.1 with
+built-in Kotlin. Flutter and Android Studio must be installed on each computer;
+do not copy a Python virtual environment from another computer.
 
 ### Optional: Text Analysis API
 
@@ -42,10 +43,11 @@ listed in `current_mood_api/requirements.txt`.
 
 1. Install Flutter and Android Studio.
 2. Open the project root folder in Android Studio or VS Code.
-3. If this is a fresh clone, install Flutter packages from a terminal in the
-   project root:
+3. From a terminal in the project root, accept Android SDK licenses and install
+   Flutter packages:
 
    ```bash
+   flutter doctor --android-licenses
    flutter pub get
    ```
 
@@ -93,24 +95,20 @@ on the selected device.
 
 ## 5. Run the Optional Text Analysis API
 
-Open a second terminal and change to the API folder:
+Open a second terminal and change to the API folder. Create a fresh virtual
+environment on each computer, then install the API dependencies:
 
 ```powershell
 cd current_mood_api
-py -m venv venv
-.\venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-uvicorn main:app --host 127.0.0.1 --port 8000
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-If PowerShell prevents virtual-environment activation, run the commands
-through its Python executable instead:
+Start the API with:
 
 ```powershell
-.\venv\Scripts\python.exe -m pip install --upgrade pip
-.\venv\Scripts\python.exe -m pip install -r requirements.txt
-.\venv\Scripts\python.exe -m uvicorn main:app --host 0.0.0.0 --port 8000
+.\.venv\Scripts\python.exe -m uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 The first API startup downloads the model
@@ -126,7 +124,7 @@ The phone and computer must be on the same Wi-Fi network.
 2. Start the API so that it accepts connections from the local network:
 
    ```powershell
-   uvicorn main:app --host 0.0.0.0 --port 8000
+.\.venv\Scripts\python.exe -m uvicorn main:app --host 0.0.0.0 --port 8000
    ```
 
 3. In the Flutter project terminal, run the app with the computer's address:

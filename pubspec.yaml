@@ -27,7 +27,7 @@ dependencies:
   google_mlkit_face_detection: ^0.13.2
   flutter_local_notifications: ^21.0.0
   flutter_secure_storage: ^11.2.0
-  record: ^6.2.1
+  record: ^7.0.0
   path_provider: ^2.1.6
   fftea: ^1.5.0+1
 

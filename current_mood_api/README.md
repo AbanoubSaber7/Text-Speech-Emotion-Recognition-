@@ -9,20 +9,16 @@ and is not a mental-health diagnostic tool.
 Open a terminal in this `current_mood_api` folder, then run:
 
 ```powershell
-py -m venv venv
-.\venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-uvicorn main:app --host 127.0.0.1 --port 8000
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-If PowerShell blocks activation, skip activation and run the virtual
-environment's Python directly:
+Create a new virtual environment on each computer; environments are not
+portable between machines. Start the API with:
 
 ```powershell
-.\venv\Scripts\python.exe -m pip install --upgrade pip
-.\venv\Scripts\python.exe -m pip install -r requirements.txt
-.\venv\Scripts\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8000
+.\.venv\Scripts\python.exe -m uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 The first server start downloads the model from Hugging Face and may take a

@@ -52,24 +52,62 @@
 For an English installation and run guide, including the optional text-analysis
 API, see [`RUNNING_GUIDE.md`](RUNNING_GUIDE.md).
 
-1. ثبت الحزم:
+### تطبيق Flutter
 
-```bash
+ثبّت Flutter وAndroid Studio مع Android SDK، ثم افتح PowerShell في مجلد المشروع
+وشغّل هذه الأوامر أول مرة:
+
+```powershell
+flutter doctor
+flutter doctor --android-licenses
 flutter pub get
 ```
 
-2. تأكد من وجود ملف `firebase_options.dart` الصحيح في `lib/`.
-   - هذا الملف يولد بواسطة FlutterFire CLI بعد إعداد مشروع Firebase.
+بعدها اعرض الأجهزة وشغّل التطبيق:
 
-3. أضف ملفات إعدادات Firebase إلى المشاريع:
-   - `android/app/google-services.json`
-   - `ios/Runner/GoogleService-Info.plist`
-
-4. شغّل التطبيق:
-
-```bash
+```powershell
+flutter devices
 flutter run
 ```
+
+إذا ظهرت عدة أجهزة، استخدم `flutter run -d <device-id>` بعد استبدال القيمة
+بمعرّف جهازك.
+
+تأكد من وجود ملف `firebase_options.dart` الصحيح في `lib/`.
+هذا الملف يُولّد بواسطة FlutterFire CLI بعد إعداد مشروع Firebase.
+
+أضف ملفات إعدادات Firebase إلى المشاريع:
+
+- `android/app/google-services.json`
+- `ios/Runner/GoogleService-Info.plist`
+
+### واجهة تحليل النص الاختيارية
+
+ثبّت Python، وافتح نافذة PowerShell ثانية في مجلد المشروع. أنشئ بيئة Python
+وثبّت الاعتمادات مرة واحدة على كل جهاز:
+
+```powershell
+cd .\current_mood_api
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+لتشغيل الـ API في المرات التالية:
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+اترك نافذة الـ API مفتوحة، ثم شغّل Flutter في نافذة أخرى. على موبايل حقيقي،
+استخدم عنوان IPv4 للكمبيوتر بدل `192.168.1.3`:
+
+```powershell
+flutter run --dart-define=TEXT_ANALYSIS_API_URL=http://<computer-ip>:8000
+```
+
+استبدل `<computer-ip>` بعنوان الكمبيوتر الظاهر في `ipconfig`، وتأكد من اتصال
+الموبايل والكمبيوتر بنفس شبكة Wi-Fi. للمحاكي استخدم `http://10.0.2.2:8000`.
 
 ## إعداد Firebase
 
